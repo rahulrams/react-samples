@@ -1,7 +1,7 @@
 import { Fragment } from 'react/jsx-runtime';
 import type { TxnsSummary } from '../models/TxnsSummary';
 
-import type { AppDispatch, RootState } from "../state/AppStore";
+import type { RootState } from "../state/AppStore";
 import { useSelector } from "react-redux";
 
 import Row from 'react-bootstrap/Row';

@@ -4,7 +4,7 @@ import type { TxnsSummary } from "../models/TxnsSummary";
 
 interface TxnsState {
     txns: Txn[];
-    statement: TxnsSummary,
+    summary: TxnsSummary,
     nextID: number
 }
 

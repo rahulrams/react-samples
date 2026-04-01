@@ -1,4 +1,4 @@
-import { useState, type SubmitEvent } from 'react';
+import { useState, type SubmitEvent, type ChangeEvent, type MouseEvent } from 'react';
 import type { Txn } from '../models/Txn';
 
 import Form from 'react-bootstrap/Form';
@@ -22,19 +22,30 @@ const TxnForm = ({ t }: TxnFormProps) => {
     t
       ? { ...t }
       : {
-          id: 0,
-          header: '',
-          txnDate: new Date().toISOString().substring(0, 10),
-          txnType: 'CREDIT',
-          amount: 0,
-        }
+        id: 0,
+        header: '',
+        txnDate: new Date().toISOString().substring(0, 10),
+        txnType: 'CREDIT',
+        amount: 0,
+      }
   );
+
+  const [validated, setValidated] = useState(false);
+
   const toggleType = (txnType: string) => {
     setTxn({ ...txn, txnType });
   };
 
-  const formSubmitted = (e: SubmitEvent) => {
-    e.preventDefault();
+  const formSubmitted = (event: SubmitEvent) => {
+    const form = event.currentTarget as HTMLFormElement;
+
+    event.preventDefault();
+    event.stopPropagation();
+    setValidated(true);
+    if (form.checkValidity() === false) {
+      return;
+    }
+
     if (!txn.isEditable) {
       dispatch(addTxn(txn));
       setTxn({
@@ -44,6 +55,7 @@ const TxnForm = ({ t }: TxnFormProps) => {
         txnType: 'CREDIT',
         amount: 0,
       });
+      form.reset();
     }
     else {
       dispatch(updateTxn(txn));
@@ -54,45 +66,63 @@ const TxnForm = ({ t }: TxnFormProps) => {
     <Form
       className="p-1 mb-1 border-bottom border-info"
       onSubmit={formSubmitted}
+      noValidate
+      validated={validated}
     >
       <Row>
         <Col xs={1} className="text-end">
-          {txn.id}
+          {txn.id > 0 ? txn.id : ""}
         </Col>
         <Col xs={2} className="text-center">
-          <Form.Control
-            type="date"
-            value={txn.txnDate}
-            onChange={(e) => setTxn({ ...txn, txnDate: e.target.value })}
-          />
+          <Form.Group controlId={`txnDate-${txn.id}`}>
+            <Form.Control
+              type="date"
+              value={txn.txnDate}
+              required
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setTxn({ ...txn, txnDate: e.target.value })}
+            />
+            <Form.Control.Feedback type="invalid">Please provide a valid date.</Form.Control.Feedback>
+          </Form.Group>
         </Col>
         <Col>
-          <Form.Control
-            type="text"
-            value={txn.header}
-            onChange={(e) => setTxn({ ...txn, header: e.target.value })}
-          />
-        </Col>
-        <Col xs={2} className="text-end" onClick={(_e) => toggleType('CREDIT')}>
-          {txn.txnType === 'CREDIT' && (
+          <Form.Group controlId={`txnHeader-${txn.id}`}>
             <Form.Control
-              type="number"
-              value={txn.amount}
-              onChange={(e) =>
-                setTxn({ ...txn, amount: Number(e.target.value) })
-              }
+              type="text"
+              value={txn.header}
+              required
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setTxn({ ...txn, header: e.target.value })}
             />
+            <Form.Control.Feedback type="invalid">Please provide a valid title.</Form.Control.Feedback>
+          </Form.Group>
+        </Col>
+        <Col xs={2} className="text-end" onClick={(_e: MouseEvent<HTMLButtonElement>) => toggleType('CREDIT')}>
+          {txn.txnType === 'CREDIT' && (
+            <Form.Group controlId={`txnAmount-${txn.id}`}>
+              <Form.Control
+                type="number"
+                value={txn.amount}
+                min={1}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setTxn({ ...txn, amount: Number(e.target.value) })
+                }
+              />
+              <Form.Control.Feedback type="invalid">Cannot be zero</Form.Control.Feedback>
+            </Form.Group>
           )}
         </Col>
-        <Col xs={2} className="text-end" onClick={(_e) => toggleType('DEBIT')}>
+        <Col xs={2} className="text-end" onClick={(_e: MouseEvent<HTMLButtonElement>) => toggleType('DEBIT')}>
           {txn.txnType === 'DEBIT' && (
-            <Form.Control
-              type="number"
-              value={txn.amount}
-              onChange={(e) =>
-                setTxn({ ...txn, amount: Number(e.target.value) })
-              }
-            />
+            <Form.Group controlId={`txnAmount-${txn.id}`}>
+              <Form.Control
+                type="number"
+                value={txn.amount}
+                min={1}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setTxn({ ...txn, amount: Number(e.target.value) })
+                }
+              />
+              <Form.Control.Feedback type="invalid">Cannot be zero</Form.Control.Feedback>
+            </Form.Group>
           )}
         </Col>
         <Col xs={2} className="text-center">
@@ -104,7 +134,7 @@ const TxnForm = ({ t }: TxnFormProps) => {
               variant="danger"
               size="sm"
               className="ms-1"
-              onClick={(_e) => cancel(txn.id)}
+              onClick={(_e: MouseEvent<HTMLButtonElement>) => cancel(txn.id)}
             >
               <i className="bi bi-x-circle" />
             </Button>
