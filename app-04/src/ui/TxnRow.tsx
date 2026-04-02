@@ -18,7 +18,7 @@ const TxnRow = ({ txn }: TxnRowProps) => {
   const dispatch: AppDispatch = useDispatch();
   const edit = (id: number) => dispatch(setEdit(id));
   const remove = (id: number) => dispatch(deleteTxn(id));
-  
+
   return (
     <Row className="p-1 mb-1 border-bottom border-info">
       <Col xs={1} className="text-end">

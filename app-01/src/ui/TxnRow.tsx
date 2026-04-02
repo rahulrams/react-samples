@@ -10,7 +10,7 @@ const TxnRow = ({ txn, edit, remove }: TxnRowProps) => (
   <div className="row p-1 mb-1 border-bottom border-info">
     <div className="col-1 text-end">{txn.id}</div>
     <div className="col-2 text-center">{txn.txnDate}</div>
-    <div className="col">{txn.txnHeader}</div>
+    <div className="col">{txn.header}</div>
     <div className="col-2 text-end">
       {txn.txnType == 'CREDIT' && txn.amount}
     </div>

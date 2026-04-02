@@ -5,49 +5,28 @@
       "header": "Salary",
       "txnDate": "2026-01-01",
       "txnType": "CREDIT",
-      "amount": 56000
-    },
-    {
-      "id": 2,
-      "header": "Rent",
-      "txnDate": "2026-01-01",
-      "txnType": "DEBIT",
-      "amount": 6000
+      "amount": 3000
     },
     {
       "id": 3,
       "header": "Fuel",
       "txnDate": "2026-01-01",
       "txnType": "DEBIT",
-      "amount": 1025
+      "amount": 1000
     },
     {
-      "id": 5,
+      "id": 4,
       "header": "Salary",
       "txnDate": "2026-02-12",
       "txnType": "CREDIT",
-      "amount": 60000
+      "amount": 8000
     },
     {
-      "id": 6,
-      "header": "Rent",
-      "txnDate": "2026-02-12",
-      "txnType": "DEBIT",
-      "amount": 7000
-    },
-    {
-      "id": 7,
-      "header": "",
-      "txnDate": "2026-03-31",
+      "id": 5,
+      "header": "RTPO",
+      "txnDate": "2026-04-02",
       "txnType": "CREDIT",
-      "amount": 0
-    },
-    {
-      "id": 8,
-      "header": "",
-      "txnDate": "2026-03-31",
-      "txnType": "CREDIT",
-      "amount": 0
+      "amount": 2000
     }
   ]
 }

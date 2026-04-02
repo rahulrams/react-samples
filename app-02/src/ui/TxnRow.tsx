@@ -18,7 +18,7 @@ const TxnRow = ({ txn, edit, remove }: TxnRowProps) => (
     <Col xs={2} className="text-center">
       {txn.txnDate}
     </Col>
-    <Col>{txn.txnHeader}</Col>
+    <Col className="text-start">{txn.header}</Col>
     <Col xs={2} className="text-end">
       {txn.txnType == 'CREDIT' && txn.amount}
     </Col>
