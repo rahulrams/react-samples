@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "json-server --port 9999 --watch ./data.json"
+    "start": "json-server --port 9999 --watch ./data.json",
+    "dev": "json-server --port 9999 --watch ./data_customers.json"
   },
   "keywords": [],
   "author": "",

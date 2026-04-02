@@ -1,0 +1,15 @@
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+const TxnsHeader = () => (
+  <Row className="fw-bold p1 mb-1 border-bottom border-dark text-center">
+    <Col xs={1}>Txn#</Col>
+    <Col xs={2}>Txn Date</Col>
+    <Col>Header</Col>
+    <Col xs={2}>Credit</Col>
+    <Col xs={2}>Debit</Col>
+    <Col xs={2}></Col>
+  </Row>
+);
+
+export default TxnsHeader;
