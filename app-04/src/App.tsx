@@ -1,7 +1,7 @@
 import { Fragment } from 'react/jsx-runtime';
 import Container from 'react-bootstrap/Container';
-import Header from './ui/Header';
-import Statement from './ui/Statement';
+import Header from './components/Header';
+import Statement from './components/Statement';
 
 const App = () => (
   <Fragment>
