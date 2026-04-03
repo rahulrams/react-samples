@@ -1,13 +1,13 @@
 import { Fragment } from 'react/jsx-runtime';
 import Container from 'react-bootstrap/Container';
 import Header from './components/Header';
-import Statement from './components/Statement';
+import CustomersList from './components/CustomersList';
 
 const App = () => (
   <Fragment>
     <Header appTitle="Budget Tracker" />
     <Container fluid>
-      <Statement />
+      <CustomersList />
     </Container>
   </Fragment>
 );

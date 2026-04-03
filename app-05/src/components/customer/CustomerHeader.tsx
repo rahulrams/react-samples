@@ -1,0 +1,23 @@
+import type { Customer } from '../../models/Customer';
+
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+
+type CustomerRowProps = {
+    customer: Customer;
+};
+
+const CustomerRow = ({ customer }: CustomerRowProps) =>
+(
+    <Row className="py-2 bg-dark text-white text-start" >
+        <Col xs={1}></Col>
+        <Col xs={1}>ID</Col>
+        <Col xs={3}>Name</Col>
+        <Col xs={2}>Mobile</Col>
+        <Col xs={3}>Mail ID</Col>
+        <Col xs={2} className="text-center"></Col>
+    </Row>
+);
+
+export default CustomerRow;

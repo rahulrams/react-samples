@@ -1,48 +1,48 @@
 {
-    "customers": [
+  "customers": [
+    {
+      "id": 1,
+      "name": "Rahul",
+      "mobile": "555555",
+      "mailID": "example@mail.com",
+      "accounts": [
         {
-            "id": 1,
-            "name": "Rahul",
-            "mobile": "9999999999",
-            "mailID": "example@mail.com",
-            "accounts": [
-                {
-                    "id": 1,
-                    "accNum": 1,
-                    "type": "SAVINGS",
-                    "currBalance": 10000,
-                    "txns": [
-                        {
-                            "id": 1,
-                            "header": "Salary",
-                            "txnDate": "2026-01-01",
-                            "txnType": "CREDIT",
-                            "amount": 3000
-                        },
-                        {
-                            "id": 3,
-                            "header": "Fuel",
-                            "txnDate": "2026-01-01",
-                            "txnType": "DEBIT",
-                            "amount": 1000
-                        },
-                        {
-                            "id": 4,
-                            "header": "Salary",
-                            "txnDate": "2026-02-12",
-                            "txnType": "CREDIT",
-                            "amount": 8000
-                        },
-                        {
-                            "id": 5,
-                            "header": "RTPO",
-                            "txnDate": "2026-04-02",
-                            "txnType": "CREDIT",
-                            "amount": 2000
-                        }
-                    ]
-                }
-            ]
+          "id": 1,
+          "accNum": 1,
+          "type": "SAVINGS",
+          "currBalance": 10000,
+          "txns": [
+            {
+              "id": 1,
+              "header": "Salary",
+              "txnDate": "2026-01-01",
+              "txnType": "CREDIT",
+              "amount": 3000
+            },
+            {
+              "id": 3,
+              "header": "Fuel",
+              "txnDate": "2026-01-01",
+              "txnType": "DEBIT",
+              "amount": 1000
+            },
+            {
+              "id": 4,
+              "header": "Salary",
+              "txnDate": "2026-02-12",
+              "txnType": "CREDIT",
+              "amount": 8000
+            },
+            {
+              "id": 5,
+              "header": "RTPO",
+              "txnDate": "2026-04-02",
+              "txnType": "CREDIT",
+              "amount": 2000
+            }
+          ]
         }
-    ]
+      ]
+    }
+  ]
 }
