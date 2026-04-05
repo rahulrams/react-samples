@@ -1,15 +1,14 @@
-import { Fragment } from 'react/jsx-runtime';
-import Container from 'react-bootstrap/Container';
-import Header from './components/Header';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import CustomersList from './components/CustomersList';
+import Statement from './components/transactions/Statement';
 
 const App = () => (
-  <Fragment>
-    <Header appTitle="Budget Tracker" />
-    <Container fluid>
-      <CustomersList />
-    </Container>
-  </Fragment>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<CustomersList />} />
+        <Route path="/txns/:accountId" element={<Statement />} />
+      </Routes>
+    </BrowserRouter>
 );
 
 export default App;

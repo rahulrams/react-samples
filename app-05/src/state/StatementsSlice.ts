@@ -23,10 +23,10 @@ const apiUrl = "http://localhost:9999/txns";
 
 export const loadTxns = createAsyncThunk<Txn[], void>(
     'StatementsSlice/loadTxns',
-    async () => {
+    async (accountId) => {
         let data: Txn[] = [];
         try {
-            data = (await axios.get(apiUrl)).data;
+            data = (await axios.get(`${apiUrl}?accountId=${accountId}`)).data;
         } catch (err) {
             throw new Error(`Failed to fetch statements ${err}`);
         }
@@ -104,7 +104,7 @@ const StatementsSlice = createSlice({
                     txns
                         .filter((t) => t.txnType === target)
                         .map((t) => t.amount)
-                        .reduce((num, sum) => sum + num);
+                        .reduce((num, sum) => sum + num, 0);
 
                     const tc = sumUp(action.payload, 'CREDIT');
                     const td = sumUp(action.payload, 'DEBIT');

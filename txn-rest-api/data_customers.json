@@ -3,46 +3,122 @@
     {
       "id": 1,
       "name": "Rahul",
-      "mobile": "555555",
-      "mailID": "example@mail.com",
-      "accounts": [
-        {
-          "id": 1,
-          "accNum": 1,
-          "type": "SAVINGS",
-          "currBalance": 10000,
-          "txns": [
-            {
-              "id": 1,
-              "header": "Salary",
-              "txnDate": "2026-01-01",
-              "txnType": "CREDIT",
-              "amount": 3000
-            },
-            {
-              "id": 3,
-              "header": "Fuel",
-              "txnDate": "2026-01-01",
-              "txnType": "DEBIT",
-              "amount": 1000
-            },
-            {
-              "id": 4,
-              "header": "Salary",
-              "txnDate": "2026-02-12",
-              "txnType": "CREDIT",
-              "amount": 8000
-            },
-            {
-              "id": 5,
-              "header": "RTPO",
-              "txnDate": "2026-04-02",
-              "txnType": "CREDIT",
-              "amount": 2000
-            }
-          ]
-        }
-      ]
+      "mobile": "555557",
+      "mailID": "example@mail.com"
+    },
+    {
+      "id": 2,
+      "name": "Ram",
+      "mobile": "77777",
+      "mailID": "test@mail.com"
+    }
+  ],
+  "accounts": [
+    {
+      "id": 1,
+      "customerId": 1,
+      "type": "SAVINGS",
+      "balance": "4000"
+    },
+    {
+      "id": 2,
+      "customerId": 1,
+      "type": "CREDIT",
+      "balance": "4000"
+    },
+    {
+      "id": 3,
+      "customerId": 2,
+      "type": "SAVINGS",
+      "balance": 20000
+    },
+    {
+      "type": "CREDIT",
+      "balance": "abc@abc.com",
+      "id": 4,
+      "customerId": 2
+    },
+    {
+      "customerId": 1,
+      "type": "CREDIT",
+      "balance": "7788",
+      "id": 5
+    },
+    {
+      "customerId": 1,
+      "type": "ABC",
+      "balance": "12456",
+      "id": 6
+    },
+    {
+      "customerId": 1,
+      "type": "ABC",
+      "balance": "1111",
+      "id": 7
+    },
+    {
+      "customerId": 1,
+      "type": "YOR",
+      "balance": "11212",
+      "id": 8
+    }
+  ],
+  "txns": [
+    {
+      "id": 1,
+      "accountId": 1,
+      "header": "Salary",
+      "txnDate": "2026-01-01",
+      "txnType": "CREDIT",
+      "amount": 3000
+    },
+    {
+      "id": 3,
+      "accountId": 1,
+      "header": "Fuel",
+      "txnDate": "2026-01-01",
+      "txnType": "DEBIT",
+      "amount": 1000
+    },
+    {
+      "id": 4,
+      "accountId": 1,
+      "header": "Salary",
+      "txnDate": "2026-02-12",
+      "txnType": "CREDIT",
+      "amount": 8000
+    },
+    {
+      "id": 5,
+      "accountId": 2,
+      "header": "RTPO",
+      "txnDate": "2026-04-02",
+      "txnType": "CREDIT",
+      "amount": 2000
+    },
+    {
+      "id": 6,
+      "accountId": 2,
+      "header": "RTPO",
+      "txnDate": "2026-04-02",
+      "txnType": "CREDIT",
+      "amount": 2000
+    },
+    {
+      "id": 7,
+      "accountId": 3,
+      "header": "RTPO",
+      "txnDate": "2026-04-02",
+      "txnType": "CREDIT",
+      "amount": 2000
+    },
+    {
+      "id": 8,
+      "accountId": 3,
+      "header": "RTPO",
+      "txnDate": "2026-04-02",
+      "txnType": "CREDIT",
+      "amount": 2000
     }
   ]
 }

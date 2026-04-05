@@ -4,12 +4,15 @@ import type { Customer } from "../models/Customer";
 
 interface CustomersState {
     customers: Customer[];
+    editMode: boolean;
+    selected?: Customer;
     inProgress?: boolean;
     errMsg?: string;
 }
 
 const initialState: CustomersState = {
-    "customers": []
+    "customers": [],
+    "editMode": false
 };
 
 const apiUrl = "http://localhost:9999/customers";
@@ -19,7 +22,7 @@ export const loadCustomers = createAsyncThunk<Customer[], void>(
     async () => {
         let data: Customer[] = [];
         try {
-            data = (await axios.get(apiUrl)).data;
+            data = (await axios.get(`${apiUrl}/?_embed=accounts`)).data;
         } catch (err) {
             throw new Error(`Failed to fetch statements ${err}`);
         }
@@ -68,6 +71,20 @@ export const deleteCustomer = createAsyncThunk<Number, Number>(
 const CustomersSlice = createSlice({
     name: "CustomersSlice",
     initialState,
+    reducers: {
+        setAdd: (state) => {
+            state.selected = undefined;
+            state.editMode = true;
+        },
+        setEdit: (state, action: PayloadAction<Customer>) => {
+            state.selected = action.payload;
+            state.editMode = true;
+        },
+        cancelEdit: (state) => {
+            state.editMode = false;
+            state.selected = undefined;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(loadCustomers.pending, (state) => {
@@ -129,4 +146,5 @@ const CustomersSlice = createSlice({
 
 const CustomersReducer = CustomersSlice.reducer;
 
+export const { setAdd, setEdit, cancelEdit } = CustomersSlice.actions;
 export default CustomersReducer;

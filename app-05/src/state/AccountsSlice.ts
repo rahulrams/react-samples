@@ -3,21 +3,22 @@ import axios from "axios";
 import type { Account } from "../models/Account";
 
 interface AccountsState {
-    accounts: Account[];
+    editMode: boolean;
+    selected?: Account;
 }
 
 const initialState: AccountsState = {
-    "accounts": []
+    editMode: false
 };
 
-const apiUrl = "http://localhost:9999/customers";
+const apiUrl = "http://localhost:9999/accounts";
 
 export const addAccount = createAsyncThunk<Account, Account>(
     'AccountsSlice/addAccount',
-    async (account, customerID) => {
+    async (account) => {
         let data: Account;
         try {
-            data = (await axios.post(`${apiUrl}/${customerID}/accounts`, account)).data;
+            data = (await axios.post(apiUrl, account)).data;
         } catch (err) {
             throw new Error('Failed to save');
         }
@@ -30,7 +31,7 @@ export const updateAccount = createAsyncThunk<Account, Account>(
     async (account) => {
         let data: Account;
         try {
-            data = (await axios.put(`${apiUrl}/${customerID}/accounts/${account.id}`, account)).data;
+            data = (await axios.put(`${apiUrl}/${account.id}`, account)).data;
         } catch (err) {
             throw new Error('Failed to save');
         }
@@ -42,7 +43,7 @@ export const deleteAccount = createAsyncThunk<Number, Number>(
     'AccountsSlice/deleteAccount',
     async (id) => {
         try {
-            await axios.delete(`${apiUrl}/${customerID}/accounts/${id}`);
+            await axios.delete(`${apiUrl}/${id}`);
         } catch (err) {
             throw new Error('Failed to delete');
         }
@@ -54,6 +55,18 @@ const AccountsSlice = createSlice({
     name: "AccountsSlice",
     initialState,
     reducers: {
+        setAdd: (state) => {
+            state.selected = undefined;
+            state.editMode = true;
+        },
+        setEdit: (state, action: PayloadAction<Account>) => {
+            state.selected = action.payload;
+            state.editMode = true;
+        },
+        cancelEdit: (state) => {
+            state.editMode = false;
+            state.selected = undefined;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -61,9 +74,9 @@ const AccountsSlice = createSlice({
                 state.inProgress = true;
                 state.errMsg = undefined;
             })
-            .addCase(addAccount.fulfilled, (state, action: PayloadAction<Account[]>) => {
+            .addCase(addAccount.fulfilled, (state, action: PayloadAction<Account>) => {
                 state.inProgress = false;
-                state.accounts = action.payload;
+                // state.accounts.push(action.payload);
             })
             .addCase(addAccount.rejected, (state, action) => {
                 state.inProgress = false;
@@ -74,4 +87,5 @@ const AccountsSlice = createSlice({
 
 const AccountsReducer = AccountsSlice.reducer;
 
+export const { setAdd, setEdit, cancelEdit } = AccountsSlice.actions;
 export default AccountsReducer;

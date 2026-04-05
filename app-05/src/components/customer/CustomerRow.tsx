@@ -51,7 +51,7 @@ const CustomerRow = ({ customer, edit, remove }: CustomerRowProps) => {
             </Row>
             <Collapse in={open}>
                 <Row className="text-left">
-                    <AccountsList accounts={customer.accounts} />
+                    <AccountsList customerId={customer.id} accounts={customer.accounts} />
                 </Row>
             </Collapse>
         </>

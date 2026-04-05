@@ -5,5 +5,4 @@ export interface Customer {
   name: string;
   mobile: string;
   mailID: string;
-  accounts: Account[];
 }
