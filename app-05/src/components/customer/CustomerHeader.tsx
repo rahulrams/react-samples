@@ -11,7 +11,7 @@ type CustomerRowProps = {
 
 const CustomerRow = ({ customer, open }: CustomerRowProps) =>
 (
-    <Row className="py-2 bg-dark text-white text-start" >
+    <Row className="py-2 bg-dark text-white fw-bold text-start" >
         <Col xs={1}></Col>
         <Col xs={1}>ID</Col>
         <Col xs={3}>Name</Col>

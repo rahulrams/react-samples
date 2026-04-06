@@ -3,15 +3,30 @@ import axios from "axios";
 import type { Account } from "../models/Account";
 
 interface AccountsState {
+    accounts: Account[];
     editMode: boolean;
     selected?: Account;
 }
 
 const initialState: AccountsState = {
+    accounts: [],
     editMode: false
 };
 
 const apiUrl = "http://localhost:9999/accounts";
+
+export const loadAccounts = createAsyncThunk<Customer[], void>(
+    'AccountsSlice/loadAccounts',
+    async () => {
+        let data: Accounts[] = [];
+        try {
+            data = (await axios.get(apiUrl)).data;
+        } catch (err) {
+            throw new Error(`Failed to fetch accounts ${err}`);
+        }
+        return data;
+    }
+);
 
 export const addAccount = createAsyncThunk<Account, Account>(
     'AccountsSlice/addAccount',
@@ -70,15 +85,61 @@ const AccountsSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(loadAccounts.pending, (state) => {
+                state.inProgress = true;
+                state.errMsg = undefined;
+            })
+            .addCase(loadAccounts.fulfilled, (state, action: PayloadAction<Account>) => {
+                state.inProgress = false;
+                //Load accounts
+                state.accounts = action.payload;
+            })
+            .addCase(loadAccounts.rejected, (state, action) => {
+                state.inProgress = false;
+                state.errMsg = action.error.message || 'An error occurred';
+            })
             .addCase(addAccount.pending, (state) => {
                 state.inProgress = true;
                 state.errMsg = undefined;
             })
             .addCase(addAccount.fulfilled, (state, action: PayloadAction<Account>) => {
                 state.inProgress = false;
-                // state.accounts.push(action.payload);
+                //Add account
+                state.accounts.push(action.payload);
             })
             .addCase(addAccount.rejected, (state, action) => {
+                state.inProgress = false;
+                state.errMsg = action.error.message || 'An error occurred';
+            })
+            .addCase(updateAccount.pending, (state) => {
+                state.inProgress = true;
+                state.errMsg = undefined;
+            })
+            .addCase(updateAccount.fulfilled, (state, action: PayloadAction<Account>) => {
+                state.inProgress = false;
+                //Update account
+                const index = state.accounts.findIndex(({ id }) => id === action.payload.id);
+                if (index > -1) {
+                    state.accounts[index] = action.payload;
+                }
+            })
+            .addCase(updateAccount.rejected, (state, action) => {
+                state.inProgress = false;
+                state.errMsg = action.error.message || 'An error occurred';
+            })
+            .addCase(deleteAccount.pending, (state) => {
+                state.inProgress = true;
+                state.errMsg = undefined;
+            })
+            .addCase(deleteAccount.fulfilled, (state, action: PayloadAction<Number>) => {
+                state.inProgress = false;
+                //Delete account
+                const index = state.accounts.findIndex(({ id }) => id === action.payload);
+                if (index > -1) {
+                    state.accounts.splice(index, 1);
+                }
+            })
+            .addCase(deleteAccount.rejected, (state, action) => {
                 state.inProgress = false;
                 state.errMsg = action.error.message || 'An error occurred';
             });

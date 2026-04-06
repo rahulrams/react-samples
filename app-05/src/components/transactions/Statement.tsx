@@ -14,6 +14,7 @@ import { useParams, Link } from "react-router-dom";
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 
 import { loadTxns } from "../../state/StatementsSlice";
 
@@ -30,30 +31,33 @@ const Statement = () => {
   }, []);
 
   return (
-    <Col as="section" sm={10} className="m-2 mx-auto p-2">
+    <Container as="section" className="p-3">
       <Row className="my-2">
         <Col xs="2" className="text-start align-items-center">
-          <Link to={`/`}>Go back</Link>
+          <Link to={`/`} className="text-decoration-none">
+            <i className="bi bi-arrow-left" />
+            &nbsp;Go back
+          </Link>
         </Col>
         <Col xs="8" className="text-center align-items-center">
           <h3 className="text-center m-0">Statement</h3>
         </Col>
       </Row>
       <TxnsHeader />
-      <TxnForm />
+      <TxnForm accountId={accountId} />
       {inProgress && <Alert variant="info">Please wait while loading</Alert>}
       {errMsg && <Alert variant={'danger'}><strong>{errMsg}</strong></Alert>}
       {txns &&
         txns.length > 0 &&
         txns.map((t) =>
           t.isEditable ? (
-            <TxnForm key={t.id} t={t} />
+            <TxnForm key={t.id} accountId={accountId} t={t} />
           ) : (
             <TxnRow key={t.id} txn={t} />
           )
         )}
       <TxnsFooter />
-    </Col>
+    </Container>
   );
 };
 

@@ -17,12 +17,15 @@ const AccountRow = ({ account }: AccountRowProps) => {
     const dispatch: AppDispatch = useDispatch();
 
     return (
-        <Row className="text-start bg-light border-bottom border-dark align-items-center py-2 border-opacity-25">
+        <Row className="text-start bg-light border-top border-dark align-items-center py-2 border-opacity-25">
             <Col xs={2}>{account.id}</Col>
             <Col xs={2}>{account.type}</Col>
             <Col xs={2}>{account.balance}</Col>
             <Col xs={3}>
-                <Link to={`/txns/${account.id}`}>Go to transactions</Link>
+                <Link to={`/txns/${account.id}`} className="text-decoration-none">
+                    Go to transactions&nbsp;
+                    <i className="bi bi-arrow-right" />
+                </Link>
             </Col>
             <Col xs={3} className="text-end">
                 <Button

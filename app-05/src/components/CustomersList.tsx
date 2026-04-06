@@ -27,7 +27,8 @@ import {
   setEdit as setEditCustomer,
   cancelEdit as cancelEditCustomer,
 } from "../state/CustomersSlice";
-import { 
+import {
+  loadAccounts,
   updateAccount, 
   addAccount, 
   setAdd as setAddAccount,
@@ -89,6 +90,7 @@ const CustomersList = () => {
 
   useEffect(() => {
     dispatch(loadCustomers());
+    dispatch(loadAccounts());
   }, []);
 
   return (
@@ -107,9 +109,6 @@ const CustomersList = () => {
         keyboard={false}
         data-bs-theme="light"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Save Customer</Modal.Title>
-        </Modal.Header>
         <Modal.Body>
           <CustomerForm customer={selectedCustomer} save={saveCustomer} cancel={closeCustomerEdit} />
         </Modal.Body>

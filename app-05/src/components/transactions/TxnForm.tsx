@@ -10,131 +10,119 @@ import type { AppDispatch } from "../state/AppStore";
 import { addTxn, updateTxn, cancelEdit } from "../../state/StatementsSlice";
 import { useDispatch } from "react-redux";
 
+import { useForm } from "react-hook-form";
+
 type TxnFormProps = {
+  accountId: Number;
   t?: Txn;
 };
 
-const TxnForm = ({ t }: TxnFormProps) => {
-  const dispatch: AppDispatch = useDispatch();
-  const cancel = (id: number) => dispatch(cancelEdit(id));
-
-  const [txn, setTxn] = useState<Txn>(
-    t
-      ? { ...t }
-      : {
-        id: 0,
-        header: '',
-        txnDate: new Date().toISOString().substring(0, 10),
-        txnType: 'CREDIT',
-        amount: 0,
-      }
-  );
-
-  const [validated, setValidated] = useState(false);
-
-  const toggleType = (txnType: string) => {
-    setTxn({ ...txn, txnType });
-  };
-
-  const formSubmitted = (event: SubmitEvent) => {
-    const form = event.currentTarget as HTMLFormElement;
-
-    event.preventDefault();
-    event.stopPropagation();
-    setValidated(true);
-    if (form.checkValidity() === false) {
-      return;
+const TxnForm = ({ accountId, t }: TxnFormProps) => {
+  const {
+    register,
+    setValue,
+    getValues,
+    watch,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Txn>({
+    defaultValues: t
+    ? { ...t }
+    : {
+      header: '',
+      txnDate: new Date().toISOString().substring(0, 10),
+      txnType: 'CREDIT',
+      amount: 0,
+      accountId: accountId
     }
-
-    if (!txn.isEditable) {
+  });
+  const txnType = watch("txnType");
+  const onSubmit: SubmitHandler<Txn> = (txn) => {
+    if (!getValues("isEditable")) {
       dispatch(addTxn(txn));
-      setTxn({
-        id: 0,
-        header: '',
-        txnDate: new Date().toISOString().substring(0, 10),
-        txnType: 'CREDIT',
-        amount: 0,
-      });
-      form.reset();
+      reset({}, { keepDefaultValues: true });
     }
     else {
       dispatch(updateTxn(txn));
     }
-  };
+  }
+  const dispatch: AppDispatch = useDispatch();
+  const cancel = () => dispatch(cancelEdit(getValues("id")));
 
   return (
-    <Form
-      className="p-1 mb-1 border-bottom border-info"
-      onSubmit={formSubmitted}
-      noValidate
-      validated={validated}
+    <Form 
+      onSubmit={handleSubmit(onSubmit)}
+      className=""
     >
-      <Row>
+      <Row className="border-bottom border-info p-1 text-center">
         <Col xs={1} className="text-end">
-          {txn.id > 0 ? txn.id : ""}
+          {getValues("id") || ""}
         </Col>
         <Col xs={2} className="text-center">
-          <Form.Group controlId={`txnDate-${txn.id}`}>
+          <Form.Group>
             <Form.Control
               type="date"
-              value={txn.txnDate}
-              required
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setTxn({ ...txn, txnDate: e.target.value })}
+              {...register("txnDate", { 
+                required: "Date is required"
+              })}
+              isInvalid={!!errors.txnDate}
             />
-            <Form.Control.Feedback type="invalid">Please provide a valid date.</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.txnDate?.message}</Form.Control.Feedback>
           </Form.Group>
         </Col>
         <Col>
-          <Form.Group controlId={`header-${txn.id}`}>
+          <Form.Group>
             <Form.Control
               type="text"
-              value={txn.header}
-              required
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setTxn({ ...txn, header: e.target.value })}
+              {...register("header", { required: "Header is required" })}
+              isInvalid={!!errors.header}
             />
-            <Form.Control.Feedback type="invalid">Please provide a valid title.</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.header?.message}</Form.Control.Feedback>
           </Form.Group>
         </Col>
-        <Col xs={2} className="text-end" onClick={(_e: MouseEvent<HTMLButtonElement>) => toggleType('CREDIT')}>
-          {txn.txnType === 'CREDIT' && (
-            <Form.Group controlId={`txnAmount-${txn.id}`}>
+        <Col xs={2} className="text-end" onClick={(_e: MouseEvent<HTMLButtonElement>) => setValue('txnType', 'CREDIT')}>
+          {txnType === 'CREDIT' && (
+            <Form.Group>
               <Form.Control
                 type="number"
-                value={txn.amount}
-                min={1}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setTxn({ ...txn, amount: Number(e.target.value) })
-                }
+                {...register("amount", { 
+                  required: "Amount is required",
+                  valueAsNumber: true,
+                  min: { value: 1, message: "Cannot be zero" }
+                })}
+                isInvalid={!!errors.amount}
               />
-              <Form.Control.Feedback type="invalid">Cannot be zero</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.amount?.message}</Form.Control.Feedback>
             </Form.Group>
           )}
         </Col>
-        <Col xs={2} className="text-end" onClick={(_e: MouseEvent<HTMLButtonElement>) => toggleType('DEBIT')}>
-          {txn.txnType === 'DEBIT' && (
-            <Form.Group controlId={`txnAmount-${txn.id}`}>
+        <Col xs={2} className="text-end" onClick={(_e: MouseEvent<HTMLButtonElement>) => setValue('txnType', 'DEBIT')}>
+          {txnType === 'DEBIT' && (
+            <Form.Group>
               <Form.Control
                 type="number"
-                value={txn.amount}
-                min={1}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setTxn({ ...txn, amount: Number(e.target.value) })
-                }
+                {...register("amount", { 
+                  required: "Amount is required",
+                  valueAsNumber: true,
+                  min: { value: 1, message: "Cannot be zero" }
+                })}
+                isInvalid={!!errors.amount}
               />
-              <Form.Control.Feedback type="invalid">Cannot be zero</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.amount?.message}</Form.Control.Feedback>
             </Form.Group>
           )}
         </Col>
-        <Col xs={2} className="text-center">
+        <Col xs={2} className="text-end">
           <Button variant="primary" size="sm" type="submit">
             <i className="bi bi-floppy" />
           </Button>
-          {txn.isEditable && (
+          {getValues("isEditable") && (
             <Button
               variant="danger"
               size="sm"
               className="ms-1"
-              onClick={(_e: MouseEvent<HTMLButtonElement>) => cancel(txn.id)}
+              onClick={(_e: MouseEvent<HTMLButtonElement>) => cancel()}
             >
               <i className="bi bi-x-circle" />
             </Button>

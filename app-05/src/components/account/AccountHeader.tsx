@@ -9,7 +9,7 @@ import { setEdit } from "../../state/AccountsSlice";
 const AccountHeader = ({ customerId }) => {
     const dispatch: AppDispatch = useDispatch();
     return (
-        <Row className="text-start bg-light border-top border-bottom border-dark align-items-center py-2 border-opacity-25">
+        <Row className="text-start fw-bold border-bottom border-dark align-items-center py-2 border-opacity-25">
             <Col xs={2}>ID</Col>
             <Col xs={2}>Type</Col>
             <Col xs={2}>Balance</Col>

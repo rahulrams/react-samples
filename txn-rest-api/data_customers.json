@@ -2,8 +2,8 @@
   "customers": [
     {
       "id": 1,
-      "name": "Rahul",
-      "mobile": "555557",
+      "name": "ABC",
+      "mobile": "66666",
       "mailID": "example@mail.com"
     },
     {
@@ -18,13 +18,7 @@
       "id": 1,
       "customerId": 1,
       "type": "SAVINGS",
-      "balance": "4000"
-    },
-    {
-      "id": 2,
-      "customerId": 1,
-      "type": "CREDIT",
-      "balance": "4000"
+      "balance": "1000"
     },
     {
       "id": 3,
@@ -34,33 +28,21 @@
     },
     {
       "type": "CREDIT",
-      "balance": "abc@abc.com",
+      "balance": "1000",
       "id": 4,
       "customerId": 2
     },
     {
       "customerId": 1,
       "type": "CREDIT",
-      "balance": "7788",
+      "balance": "1000",
       "id": 5
     },
     {
       "customerId": 1,
-      "type": "ABC",
-      "balance": "12456",
+      "type": "Test",
+      "balance": "1500",
       "id": 6
-    },
-    {
-      "customerId": 1,
-      "type": "ABC",
-      "balance": "1111",
-      "id": 7
-    },
-    {
-      "customerId": 1,
-      "type": "YOR",
-      "balance": "11212",
-      "id": 8
     }
   ],
   "txns": [
@@ -89,36 +71,28 @@
       "amount": 8000
     },
     {
-      "id": 5,
-      "accountId": 2,
-      "header": "RTPO",
-      "txnDate": "2026-04-02",
+      "header": "ART",
+      "txnDate": "2026-04-06",
       "txnType": "CREDIT",
-      "amount": 2000
-    },
-    {
-      "id": 6,
-      "accountId": 2,
-      "header": "RTPO",
-      "txnDate": "2026-04-02",
-      "txnType": "CREDIT",
-      "amount": 2000
-    },
-    {
-      "id": 7,
-      "accountId": 3,
-      "header": "RTPO",
-      "txnDate": "2026-04-02",
-      "txnType": "CREDIT",
-      "amount": 2000
-    },
-    {
+      "amount": 3000,
       "id": 8,
-      "accountId": 3,
-      "header": "RTPO",
-      "txnDate": "2026-04-02",
-      "txnType": "CREDIT",
-      "amount": 2000
+      "accountId": 5
+    },
+    {
+      "header": "RTP",
+      "txnDate": "2026-04-06",
+      "txnType": "DEBIT",
+      "amount": 2000,
+      "id": 9,
+      "accountId": 5
+    },
+    {
+      "header": "ART",
+      "txnDate": "2026-04-01",
+      "txnType": "DEBIT",
+      "amount": 4000,
+      "accountId": 6,
+      "id": 10
     }
   ]
 }

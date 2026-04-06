@@ -10,21 +10,21 @@ type AccountsListProps = {
 };
 
 const AccountsList = ({ customerId, accounts }: AccountsListProps) => (
-    <>
-        <Row className="px-5">
-            <Col xs={12} className="bg-light text-dark">
+    <Col xs="12" md="10" className="mx-auto">
+        <Row>
+            <Col xs={12}>
                 <AccountHeader customerId={customerId} />
             </Col>
         </Row>
-        <Row className="px-5">
-            <Col xs={12} className="bg-light text-dark">
+        <Row>
+            <Col xs={12}>
                 {accounts &&
                     accounts.length > 0 &&
                     accounts.map((a) => <AccountRow key={a.id} customerId={customerId} account={a} />)
                 }
             </Col>
         </Row>
-    </>
+    </Col>
 );
 
 export default AccountsList;

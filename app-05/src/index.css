@@ -64,6 +64,9 @@
 
 body {
   margin: 0;
+  font-family: "DM Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 
 h1,

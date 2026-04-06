@@ -22,7 +22,7 @@ export const loadCustomers = createAsyncThunk<Customer[], void>(
     async () => {
         let data: Customer[] = [];
         try {
-            data = (await axios.get(`${apiUrl}/?_embed=accounts`)).data;
+            data = (await axios.get(apiUrl)).data;
         } catch (err) {
             throw new Error(`Failed to fetch statements ${err}`);
         }

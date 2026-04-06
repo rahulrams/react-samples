@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { RootState } from "../state/AppStore";
 
 import type { Customer } from '../../models/Customer';
 import AccountsList from "../account/AccountsList";
@@ -7,6 +8,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Collapse from 'react-bootstrap/Collapse';
+
+import { useSelector } from "react-redux";
 
 type CustomerRowProps = {
     customer: Customer;
@@ -17,13 +20,15 @@ type CustomerRowProps = {
 const CustomerRow = ({ customer, edit, remove }: CustomerRowProps) => {
     const [open, setOpen] = useState(false);
 
+    const accounts = useSelector((state: RootState) => state.accountsSlice.accounts).filter((a) => a.customerId === customer.id);
+
     return (
         <>
             <Row className="py-2 text-start align-items-center">
                 <Col xs={1}>
-                <Button onClick={() => setOpen(!open)} aria-expanded={open} variant="link">
-                    <i className={`text-dark bi ${open?'bi-caret-up-fill':'bi-caret-down-fill'}`} />
-                </Button>
+                    <Button onClick={() => setOpen(!open)} aria-expanded={open} variant="link">
+                        <i className={`text-dark bi ${open ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}`} />
+                    </Button>
                 </Col>
                 <Col xs={1}>{customer.id}</Col>
                 <Col xs={3}>{customer.name}</Col>
@@ -34,7 +39,7 @@ const CustomerRow = ({ customer, edit, remove }: CustomerRowProps) => {
                         type="button"
                         variant="secondary"
                         size="sm"
-                        onClick={_e => edit(customer)}
+                        onClick={(_e) => edit(customer)}
                     >
                         <i className="bi bi-pen" title="EDIT" />
                     </Button>
@@ -44,14 +49,14 @@ const CustomerRow = ({ customer, edit, remove }: CustomerRowProps) => {
                         size="sm"
                         className="ms-1"
                         onClick={(_e) => remove(customer.id)}
-                        >
+                    >
                         <i className="bi bi-trash" title="Double click to delete" />
                     </Button>
                 </Col>
             </Row>
             <Collapse in={open}>
-                <Row className="text-left">
-                    <AccountsList customerId={customer.id} accounts={customer.accounts} />
+                <Row className="text-left border-top border-bottom border-primary bg-light text-dark">
+                    <AccountsList customerId={customer.id} accounts={accounts} />
                 </Row>
             </Collapse>
         </>

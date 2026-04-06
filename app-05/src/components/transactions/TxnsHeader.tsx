@@ -2,7 +2,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 const TxnsHeader = () => (
-  <Row className="fw-bold p1 mb-1 border-bottom border-dark text-center">
+  <Row className="fw-bold p-2 mb-1 border-top border-bottom border-dark text-center border-opacity-50">
     <Col xs={1}>Txn#</Col>
     <Col xs={2}>Txn Date</Col>
     <Col>Header</Col>

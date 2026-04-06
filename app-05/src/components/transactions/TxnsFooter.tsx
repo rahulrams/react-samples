@@ -11,7 +11,7 @@ const TxnsFooter = () => {
   const txnsSummary: TxnsSummary = useSelector((state: RootState) => state.statementsSlice.summary);
   return (
     <Fragment>
-      <Row className="fw-bold p1 mb-1 border-bottom border-dark">
+      <Row className="fw-bold p1 mb-1 border-bottom border-dark border-opacity-25">
         <Col className="text-end">Totals</Col>
         <Col xs={2} className="text-end">
           {txnsSummary.totalCredit}
@@ -21,7 +21,7 @@ const TxnsFooter = () => {
         </Col>
         <Col xs={2} className="text-center"></Col>
       </Row>
-      <Row className="fw-bold p1 mb-1 border-bottom border-dark">
+      <Row className="fw-bold p1 mb-1 border-bottom border-dark border-opacity-25">
         <Col className="text-end">Balance</Col>
         <Col xs={2} className="text-end"></Col>
         <Col xs={2} className="text-end">

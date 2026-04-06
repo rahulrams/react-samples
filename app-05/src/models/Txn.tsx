@@ -4,5 +4,6 @@ export interface Txn {
   txnDate: string;
   txnType: string;
   amount: number;
+  accountId: number;
   isEditable?: boolean;
 }

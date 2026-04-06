@@ -20,7 +20,7 @@ const TxnRow = ({ txn }: TxnRowProps) => {
   const remove = (id: number) => dispatch(deleteTxn(id));
 
   return (
-    <Row className="p-1 mb-1 border-bottom border-info">
+    <Row className="p-1 mb-1 border-bottom align-items-center border-dark border-opacity-25">
       <Col xs={1} className="text-end">
         {txn.id}
       </Col>
@@ -34,7 +34,7 @@ const TxnRow = ({ txn }: TxnRowProps) => {
       <Col xs={2} className="text-end">
         {txn.txnType == 'DEBIT' && txn.amount}
       </Col>
-      <Col xs={2} className="text-center">
+      <Col xs={2} className="text-end">
         <Button
           type="button"
           variant="secondary"

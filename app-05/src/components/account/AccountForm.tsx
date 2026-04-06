@@ -1,4 +1,4 @@
-import { useState, type SubmitEvent, type ChangeEvent, type MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 import type { Account } from '../models/Account';
 
 import Form from 'react-bootstrap/Form';
@@ -6,9 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-import { useForm, Controller } from "react-hook-form";
-
-import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
 
 type AccountFormProps = {
   account?: Account;
@@ -20,27 +18,40 @@ const AccountForm = ({ account, save, cancel }: AccountFormProps) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<Account>({
     defaultValues: account
-  })
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  });
+  const onSubmit: SubmitHandler<Account> = (data) => {
     save(data);
     cancel();
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <Row>
         <Col className="p-2">
-          <input {...register("type", { required: true })} />
-          {errors.type && <span>Type is required</span>}
+          <Form.Control 
+            type="text" 
+            placeholder="Enter type"
+            {...register("type", { required: "Type is required" })}
+            isInvalid={!!errors.type}
+          />
+          <Form.Control.Feedback type="invalid">
+            {errors.type?.message}
+          </Form.Control.Feedback>
         </Col>
 
         <Col className="p-2">
-          <input {...register("balance", { required: true })} />
-          {errors.balance && <span>Balance is required</span>}
+        <Form.Control 
+            type="number" 
+            placeholder="Enter Balance"
+            {...register("balance", { required: "Balance is required" })}
+            isInvalid={!!errors.balance}
+          />
+          <Form.Control.Feedback type="invalid">
+            {errors.balance?.message}
+          </Form.Control.Feedback>
         </Col>
       </Row>
       <Row>
@@ -53,7 +64,7 @@ const AccountForm = ({ account, save, cancel }: AccountFormProps) => {
           </Button>
         </Col>
       </Row>
-    </form>
+    </Form>
   )
 };
 
