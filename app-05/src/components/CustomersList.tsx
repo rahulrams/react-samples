@@ -11,6 +11,7 @@ import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Accordion from 'react-bootstrap/Accordion';
 
 import CustomerRow from "./customer/CustomerRow";
 import CustomerForm from "./customer/CustomerForm";
@@ -88,9 +89,14 @@ const CustomersList = () => {
     }
   }
 
+  const loadCustomerAccounts = (eventKey) => {
+    if(eventKey) {
+      dispatch(loadAccounts(eventKey));
+    }
+  };
+
   useEffect(() => {
     dispatch(loadCustomers());
-    dispatch(loadAccounts());
   }, []);
 
   return (
@@ -98,10 +104,12 @@ const CustomersList = () => {
       {inProgress && <Alert variant="info">Please wait while loading</Alert>}
       {errMsg && <Alert variant={'danger'}><strong>{errMsg}</strong></Alert>}
       <CustomerHeader open={openAddCustomerModal} />
+      <Accordion defaultActiveKey="0" onSelect={ (eventKey) => loadCustomerAccounts(eventKey) }>
       {customers &&
         customers.length > 0 &&
         customers.map((customer: Customer) => <CustomerRow key={customer.id} customer={customer} edit={openEditCustomerModal} remove={removeCustomer} />)
       }
+      </Accordion>
       <Modal
         show={customerEditMode}
         onHide={closeCustomerEdit}
@@ -120,9 +128,6 @@ const CustomersList = () => {
         keyboard={false}
         data-bs-theme="light"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Save account</Modal.Title>
-        </Modal.Header>
         <Modal.Body>
           <AccountForm account={selectedAccount} save={saveAccount} cancel={closeAccountEdit} />
         </Modal.Body>

@@ -5,9 +5,14 @@ import type { TxnsSummary } from "../models/TxnsSummary";
 
 interface TxnsState {
     txns: Txn[];
-    statement: TxnsSummary,
+    summary: TxnsSummary,
     inProgress?: boolean;
     errMsg?: string;
+}
+
+interface TxnPayLoadActionType {
+    txn: Txn;
+    summary: TxnsSummary;
 }
 
 const initialState: TxnsState = {
@@ -20,6 +25,7 @@ const initialState: TxnsState = {
 };
 
 const apiUrl = "http://localhost:9999/txns";
+const apiUrlAccounts = "http://localhost:9999/accounts";
 
 export const loadTxns = createAsyncThunk<Txn[], void>(
     'StatementsSlice/loadTxns',
@@ -34,41 +40,133 @@ export const loadTxns = createAsyncThunk<Txn[], void>(
     }
 );
 
-export const addTxn = createAsyncThunk<Txn, Txn>(
+export const addTxn = createAsyncThunk<TxnPayLoadActionType, Txn>(
     'StatementsSlice/addTxn',
-    async (txn) => {
+    async (txn, { getState }) => {
         let data: Txn;
+
+        let totalCredit = 0;
+        let totalDebit = 0;
+        let balance = 0;
+
         try {
             data = (await axios.post(apiUrl, txn)).data;
+            
+            const statementsSlice = getState().statementsSlice;
+            totalCredit = statementsSlice.summary.totalCredit;
+            totalDebit = statementsSlice.summary.totalDebit;
+
+            if (data.txnType === "CREDIT") {
+                totalCredit += data.amount;
+            }
+            else if (data.txnType === "DEBIT") {
+                totalDebit += data.amount;
+            }
+            balance = totalCredit - totalDebit;
+            await axios.patch(`${apiUrlAccounts}/${data.accountId}`, {balance: balance});
+
         } catch (err) {
             throw new Error('Failed to save');
         }
-        return data;
+        return {
+            txn: data, 
+            summary: {
+                totalCredit: totalCredit,
+                totalDebit: totalDebit,
+                balance: balance
+            }
+        };
     }
 );
 
-export const updateTxn = createAsyncThunk<Txn, Txn>(
+export const updateTxn = createAsyncThunk<TxnPayLoadActionType, Txn>(
     'StatementsSlice/updateTxn',
-    async (txn) => {
+    async (txn, { dispatch, getState }) => {
         let data: Txn;
+
+        let totalCredit = 0;
+        let totalDebit = 0;
+        let balance = 0;
         try {
-            data = (await axios.put(apiUrl + "/" + txn.id, { ...txn, isEditable: undefined })).data;
+            data = (await axios.put(`${apiUrl}/${txn.id}`, { ...txn, isEditable: undefined })).data;
+
+            const statementsSlice = getState().statementsSlice;
+            let txns = statementsSlice.txns;
+
+            totalCredit = statementsSlice.summary.totalCredit;
+            totalDebit = statementsSlice.summary.totalDebit;
+
+            let index = txns.findIndex(({ id }) => id === data.id);
+            if (index > -1) {
+                //Remove the older values for credit/debit
+                if (txns[index].txnType === "CREDIT") {
+                    totalCredit -= txns[index].amount;
+                }
+                else if (txns[index].txnType === "DEBIT") {
+                    totalDebit -= txns[index].amount;
+                }
+
+                //Add the new values for credit/debit
+                if (data.txnType === "CREDIT") {
+                    totalCredit += data.amount;
+                }
+                else if (data.txnType === "DEBIT") {
+                    totalDebit += data.amount;
+                }
+                balance = totalCredit - totalDebit;
+            }
+            await axios.patch(`${apiUrlAccounts}/${data.accountId}`, {balance: balance});
+
         } catch (err) {
             throw new Error('Failed to save');
         }
-        return data;
+        return {
+            txn: data, 
+            summary: {
+                totalCredit: totalCredit,
+                totalDebit: totalDebit,
+                balance: balance
+            }
+        };
     }
 );
 
-export const deleteTxn = createAsyncThunk<Number, Number>(
+export const deleteTxn = createAsyncThunk<TxnPayLoadActionType, Txn>(
     'StatementsSlice/deleteTxn',
-    async (id) => {
+    async (txn, { dispatch, getState }) => {
+        let totalCredit = 0;
+        let totalDebit = 0;
+        let balance = 0;
+
         try {
-            await axios.delete(apiUrl + "/" + id);
+            await axios.delete(apiUrl + "/" + txn.id);
+
+            const statementsSlice = getState().statementsSlice;
+            
+            totalCredit = statementsSlice.summary.totalCredit;
+            totalDebit = statementsSlice.summary.totalDebit;
+
+            if (txn.txnType === "CREDIT") {
+                totalCredit -= txn.amount;
+            }
+            else if (txn.txnType === "DEBIT") {
+                totalDebit -= txn.amount;
+            }
+            balance = totalCredit - totalDebit;
+
+            await axios.patch(`${apiUrlAccounts}/${txn.accountId}`, {balance: balance});
+
         } catch (err) {
             throw new Error('Failed to delete');
         }
-        return id;
+        return{
+            txn: txn, 
+            summary: {
+                totalCredit: totalCredit,
+                totalDebit: totalDebit,
+                balance: balance
+            }
+        };
     }
 );
 
@@ -101,10 +199,10 @@ const StatementsSlice = createSlice({
 
                 if (action.payload && action.payload.length > 0) {
                     const sumUp = (txns: Txn[], target: string) =>
-                    txns
-                        .filter((t) => t.txnType === target)
-                        .map((t) => t.amount)
-                        .reduce((num, sum) => sum + num, 0);
+                        txns
+                            .filter((t) => t.txnType === target)
+                            .map((t) => t.amount)
+                            .reduce((num, sum) => sum + num, 0);
 
                     const tc = sumUp(action.payload, 'CREDIT');
                     const td = sumUp(action.payload, 'DEBIT');
@@ -122,17 +220,11 @@ const StatementsSlice = createSlice({
                 state.inProgress = true;
                 state.errMsg = undefined;
             })
-            .addCase(addTxn.fulfilled, (state, action: PayloadAction<Txn>) => {
+            .addCase(addTxn.fulfilled, (state, action: PayloadAction<TxnPayLoadActionType>) => {
                 state.inProgress = false;
-                
-                state.txns.push(action.payload);
-                if (action.payload.txnType === "CREDIT") {
-                    state.summary.totalCredit += action.payload.amount;
-                }
-                else if (action.payload.txnType === "DEBIT") {
-                    state.summary.totalDebit += action.payload.amount;
-                }
-                state.summary.balance = state.summary.totalCredit - state.summary.totalDebit;
+
+                state.txns.push(action.payload.txn);
+                state.summary = action.payload.summary;
             })
             .addCase(addTxn.rejected, (state, action) => {
                 state.inProgress = false;
@@ -142,33 +234,17 @@ const StatementsSlice = createSlice({
                 state.inProgress = true;
                 state.errMsg = undefined;
             })
-            .addCase(updateTxn.fulfilled, (state, action: PayloadAction<Txn>) => {
+            .addCase(updateTxn.fulfilled, (state, action: PayloadAction<TxnPayLoadActionType>) => {
                 state.inProgress = false;
-                let index = state.txns.findIndex(({ id }) => id === action.payload.id);
-                if (index > -1) {
-                    //Remove the older values for credit/debit
-                    if (state.txns[index].txnType === "CREDIT") {
-                        state.summary.totalCredit -= state.txns[index].amount;
-                    }
-                    else if (state.txns[index].txnType === "DEBIT") {
-                        state.summary.totalDebit -= state.txns[index].amount;
-                    }
-
+                let index = state.txns.findIndex(({ id }) => id === action.payload.txn.id);
+                if (index >= 0) {
                     //Updating the transaction record
-                    state.txns[index] = action.payload;
+                    state.txns[index] = action.payload.txn;
                     state.txns[index].isEditable = undefined;
-
-                    //Add the new values for credit/debit
-                    if (action.payload.txnType === "CREDIT") {
-                        state.summary.totalCredit += action.payload.amount;
-                    }
-                    else if (action.payload.txnType === "DEBIT") {
-                        state.summary.totalDebit += action.payload.amount;
-                    }
-                    state.summary.balance = state.summary.totalCredit - state.summary.totalDebit;
                 }
+                state.summary = action.payload.summary;
             })
-            .addCase(updateTxn.rejected, (state, action) => {
+            .addCase(updateTxn.rejected, (state) => {
                 state.inProgress = false;
                 state.errMsg = action.error.message || 'An error occurred';
             })
@@ -176,23 +252,16 @@ const StatementsSlice = createSlice({
                 state.inProgress = true;
                 state.errMsg = undefined;
             })
-            .addCase(deleteTxn.fulfilled, (state, action: PayloadAction<Number>) => {
+            .addCase(deleteTxn.fulfilled, (state, action: PayloadAction<TxnPayLoadActionType>) => {
                 state.inProgress = false;
-                
-                let index = state.txns.findIndex(({ id }) => id === action.payload);
-                if (index > -1) {
-                    if (state.txns[index].txnType === "CREDIT") {
-                        state.summary.totalCredit -= state.txns[index].amount;
-                    }
-                    else if (state.txns[index].txnType === "DEBIT") {
-                        state.summary.totalDebit -= state.txns[index].amount;
-                    }
-                    state.summary.balance = state.summary.totalCredit - state.summary.totalDebit;
 
+                let index = state.txns.findIndex(({ id }) => id === action.payload.txn.id);
+                if (index >= 0) {
                     state.txns.splice(index, 1);
                 }
+                state.summary = action.payload.summary;
             })
-            .addCase(deleteTxn.rejected, (state, action) => {
+            .addCase(deleteTxn.rejected, (state) => {
                 state.inProgress = false;
                 state.errMsg = action.error.message || 'An error occurred';
             });

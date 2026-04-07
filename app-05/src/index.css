@@ -98,6 +98,11 @@ p {
   margin: 0;
 }
 
+.accordion-button:not(.collapsed) {
+  background: white !important;
+  box-shadow: none;
+}
+
 code,
 .counter {
   font-family: var(--mono);

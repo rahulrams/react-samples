@@ -9,15 +9,18 @@ import { setEdit, deleteTxn } from "../../state/StatementsSlice";
 import { useDispatch } from "react-redux";
 
 type TxnRowProps = {
+  accountId: number;
   txn: Txn;
   edit: (id: number) => void;
   remove: (id: number) => void;
 };
 
-const TxnRow = ({ txn }: TxnRowProps) => {
+const TxnRow = ({ accountId, txn }: TxnRowProps) => {
   const dispatch: AppDispatch = useDispatch();
   const edit = (id: number) => dispatch(setEdit(id));
-  const remove = (id: number) => dispatch(deleteTxn(id));
+  const remove = (txn: Txn) => {
+    dispatch(deleteTxn(txn));
+  };
 
   return (
     <Row className="p-1 mb-1 border-bottom align-items-center border-dark border-opacity-25">
@@ -48,7 +51,7 @@ const TxnRow = ({ txn }: TxnRowProps) => {
           variant="danger"
           size="sm"
           className="ms-1"
-          onClick={(_e) => remove(txn.id)}
+          onClick={(_e) => remove(txn)}
         >
           <i className="bi bi-trash" title="Double click to delete" />
         </Button>

@@ -46,7 +46,7 @@ const AccountForm = ({ account, save, cancel }: AccountFormProps) => {
         <Form.Control 
             type="number" 
             placeholder="Enter Balance"
-            {...register("balance", { required: "Balance is required" })}
+            {...register("balance", { valueAsNumber: true })}
             isInvalid={!!errors.balance}
           />
           <Form.Control.Feedback type="invalid">

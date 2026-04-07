@@ -27,7 +27,7 @@ const TxnForm = ({ accountId, t }: TxnFormProps) => {
     reset,
     formState: { errors },
   } = useForm<Txn>({
-    defaultValues: t
+    defaultValues: t 
     ? { ...t }
     : {
       header: '',
@@ -55,7 +55,7 @@ const TxnForm = ({ accountId, t }: TxnFormProps) => {
       onSubmit={handleSubmit(onSubmit)}
       className=""
     >
-      <Row className="border-bottom border-info p-1 text-center">
+      <Row className="border-bottom border-info p-2 text-center">
         <Col xs={1} className="text-end">
           {getValues("id") || ""}
         </Col>

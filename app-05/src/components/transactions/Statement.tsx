@@ -53,7 +53,7 @@ const Statement = () => {
           t.isEditable ? (
             <TxnForm key={t.id} accountId={accountId} t={t} />
           ) : (
-            <TxnRow key={t.id} txn={t} />
+            <TxnRow key={t.id} accountId={accountId} txn={t} />
           )
         )}
       <TxnsFooter />

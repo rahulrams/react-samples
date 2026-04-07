@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Account } from "../models/Account";
+import { addTxn, updateTxn, deleteTxn } from "./StatementsSlice";
 
 interface AccountsState {
     accounts: Account[];
@@ -15,12 +16,12 @@ const initialState: AccountsState = {
 
 const apiUrl = "http://localhost:9999/accounts";
 
-export const loadAccounts = createAsyncThunk<Customer[], void>(
+export const loadAccounts = createAsyncThunk<Account[], Number>(
     'AccountsSlice/loadAccounts',
-    async () => {
-        let data: Accounts[] = [];
+    async (customerId: number) => {
+        let data: Account[] = [];
         try {
-            data = (await axios.get(apiUrl)).data;
+            data = (await axios.get(`${apiUrl}?customerId=${customerId}`)).data;
         } catch (err) {
             throw new Error(`Failed to fetch accounts ${err}`);
         }
@@ -142,6 +143,27 @@ const AccountsSlice = createSlice({
             .addCase(deleteAccount.rejected, (state, action) => {
                 state.inProgress = false;
                 state.errMsg = action.error.message || 'An error occurred';
+            })
+            .addCase(addTxn.fulfilled, (state, action: PayloadAction) => {
+                const accountId = action.payload.txn.accountId;
+                const index = state.accounts.findIndex(({ id }) => id === accountId);
+                if(index >= 0) {
+                    state.accounts[index].balance = action.payload.summary.balance;
+                }
+            })
+            .addCase(updateTxn.fulfilled, (state, action: PayloadAction) => {
+                const accountId = action.payload.txn.accountId;
+                const index = state.accounts.findIndex(({ id }) => id === accountId);
+                if(index >= 0) {
+                    state.accounts[index].balance = action.payload.summary.balance;
+                }
+            })
+            .addCase(deleteTxn.fulfilled, (state, action: PayloadAction) => {
+                const accountId = action.payload.txn.accountId;
+                const index = state.accounts.findIndex(({ id }) => id === accountId);
+                if(index >= 0) {
+                    state.accounts[index].balance = action.payload.summary.balance;
+                }
             });
     }
 });
